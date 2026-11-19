@@ -630,7 +630,174 @@ document.getElementById("videoMessage").textContent =
 
 unlockVideo();
 }
-  video.addEventListener("playing",()=>{
+
+  
+<script>
+const REWARD = 1500;
+const REQUIRED_SECONDS = 120;
+const DAY = 24 * 60 * 60 * 1000;
+const STORAGE_KEY = "azdar_safeena_member_v1";
+
+function loadData(){
+try{
+const value = JSON.parse(localStorage.getItem(STORAGE_KEY));
+if(value && typeof value === "object") return value;
+}catch(e){}
+return null;
+}
+
+let data = loadData();
+
+if(!data){
+data = {
+cycleStart: Date.now(),
+total: 0,
+daily: 0,
+completed: false
+};
+save();
+}
+
+function save(){
+localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+}
+
+const video = document.getElementById("dailyVideo");
+
+let watched = 0;
+let previousTime = null;
+let lastUpdate = 0;
+let completed = false;
+let videoReady = false;
+
+function formatMoney(amount){
+return "Rs. " + Number(amount).toLocaleString("en-PK");
+}
+
+function updateEarnings(){
+document.getElementById("totalEarning").textContent =
+formatMoney(data.total);
+
+document.getElementById("dailyEarning").textContent =
+formatMoney(data.daily);
+}
+
+function updateCountdown(){
+const remaining = Math.max(
+0,
+data.cycleStart + DAY - Date.now()
+);
+
+const h = Math.floor(remaining / 3600000);
+const m = Math.floor((remaining % 3600000) / 60000);
+const s = Math.floor((remaining % 60000) / 1000);
+
+document.getElementById("activationTimer").textContent =
+"⏳ Next Reset In: " +
+String(h).padStart(2,"0") + ":" +
+String(m).padStart(2,"0") + ":" +
+String(s).padStart(2,"0");
+}
+
+function updateStatus(){
+document.getElementById("statusPill").textContent = "ACTIVE";
+
+document.getElementById("topStatus").innerHTML =
+'<i></i> ACTIVE';
+
+document.getElementById("statusDescription").textContent =
+"Your account is active.";
+
+unlockVideo();
+}
+
+function unlockVideo(){
+
+if(data.completed){
+videoReady = false;
+video.pause();
+video.style.display = "none";
+
+document.getElementById("lockedMessage").style.display = "flex";
+
+document.getElementById("lockedMessage").innerHTML =
+'<div class="lock-icon">✓</div><strong>Daily Target Completed</strong><span style="font-size:12px">Your next session will be available after the next 24-hour cycle.</span>';
+
+document.getElementById("videoMessage").textContent =
+"Your daily viewing session is complete.";
+
+return;
+}
+
+video.style.display = "block";
+
+document.getElementById("lockedMessage").style.display = "none";
+
+if(!videoReady){
+videoReady = true;
+video.load();
+}
+}
+
+function resetCycle(){
+const now = Date.now();
+
+if(now >= data.cycleStart + DAY){
+
+const periods = Math.floor(
+(now - data.cycleStart) / DAY
+);
+
+data.cycleStart += periods * DAY;
+data.daily = 0;
+data.completed = false;
+
+watched = 0;
+completed = false;
+previousTime = null;
+
+save();
+}
+}
+
+function updateProgress(){
+const seconds = Math.min(watched,REQUIRED_SECONDS);
+const percent = seconds / REQUIRED_SECONDS * 100;
+
+document.getElementById("watchBar").style.width =
+percent + "%";
+
+document.getElementById("watchTime").textContent =
+Math.floor(seconds) + " / 120 seconds";
+
+document.getElementById("watchPercent").textContent =
+Math.floor(percent) + "%";
+}
+
+function creditReward(){
+
+if(completed || data.completed) return;
+
+completed = true;
+data.completed = true;
+
+data.total += REWARD;
+data.daily += REWARD;
+
+save();
+
+updateEarnings();
+updateProgress();
+
+video.pause();
+
+document.getElementById("videoMessage").textContent =
+"Your viewing session is complete. Displayed demo reward updated.";
+
+unlockVideo();
+}
+
+video.addEventListener("playing",()=>{
 if(!videoReady || completed){
 video.pause();
 return;
@@ -705,6 +872,7 @@ resetCycle();
 updateStatus();
 updateEarnings();
 updateProgress();
+updateCountdown();
 }
 
 refresh();
