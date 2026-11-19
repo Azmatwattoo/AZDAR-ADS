@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AzDar Ads Watching</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+:root{
+--bg:#080d1a;
+--panel:#111a2d;
+--cyan:#00e5ff;
+--purple:#995cff;
+--text:#f5f7ff;
+--muted:#91a0b8;
+--border:rgba(132,155,205,.17);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+margin:0;
+background:
+radial-gradient(ellipse at 15% 15%,rgba(111,64,255,.12),transparent 35%),
+radial-gradient(ellipse at 85% 70%,rgba(0,229,255,.09),transparent 35%),
+#080d1a;
+color:var(--text);
+font-family:Inter,Arial,sans-serif;
+min-height:100vh;
+overflow-x:hidden;
+}
+body:before,body:after{
+content:"";
+position:fixed;
+width:420px;height:420px;
+border-radius:50%;
+filter:blur(160px);
+pointer-events:none;
+animation:floatLight 12s ease-in-out infinite alternate;
+}
+body:before{
+top:-180px;left:-150px;
+background:#713dff;opacity:.23;
+}
+body:after{
+bottom:-200px;right:-150px;
+background:#00d9ff;opacity:.17;
+}
+.container{
+max-width:1050px;
+margin:auto;
+padding:25px 18px 50px;
+position:relative;z-index:1;
+}
+.topbar{
+display:flex;align-items:center;
+justify-content:space-between;
+gap:12px;padding:13px 17px;
+background:rgba(17,26,45,.85);
+border:1px solid var(--border);
+border-radius:16px;
+backdrop-filter:blur(18px);
+animation:slideDown .8s ease;
+}
+.brand{
+display:flex;align-items:center;
+gap:10px;font-size:18px;
+font-weight:900;letter-spacing:.5px;
+}
+.logo{
+width:42px;height:42px;
+border-radius:13px;
+display:grid;place-items:center;
+background:linear-gradient(135deg,var(--purple),var(--cyan));
+color:#06101c;font-size:23px;
+box-shadow:0 0 20px rgba(0,229,255,.3);
+animation:logoPulse 3s infinite,logoFloat 4s ease-in-out infinite;
+}
+.small-status{
+color:#b9c8db;font-size:11px;
+border:1px solid var(--border);
+padding:8px 11px;border-radius:30px;
+background:rgba(255,255,255,.025);
+}
+.small-status i{
+display:inline-block;width:7px;height:7px;
+border-radius:50%;background:#50f2b4;
+margin-right:6px;
+}
+.hero{
+padding:38px 5px 27px;
+animation:fadeUp .9s ease;
+}
+.eyebrow{
+color:var(--cyan);font-size:11px;
+font-weight:800;letter-spacing:3px;
+}
+.hero h1{
+font-size:clamp(28px,5vw,43px);
+margin:12px 0;letter-spacing:-1.8px;
+}
+.hero h1 span{
+background:linear-gradient(90deg,var(--cyan),#a77aff,var(--cyan));
+background-size:200% auto;
+-webkit-background-clip:text;
+color:transparent;
+animation:gradientMove 4s linear infinite;
+}
+.hero p{
+color:var(--muted);font-size:14px;
+line-height:1.7;margin:0;
+}
+.stats{
+display:grid;grid-template-columns:repeat(2,1fr);
+gap:16px;margin-bottom:18px;
+}
+.stat-card{
+padding:23px;border-radius:20px;
+background:linear-gradient(145deg,#16233b,#101729);
+border:1px solid var(--border);
+position:relative;overflow:hidden;
+transition:.4s;
+animation:cardEnter .9s both;
+}
+.stat-card:nth-child(2){animation-delay:.15s}
+.stat-card:hover{
+transform:translateY(-6px);
+border-color:var(--cyan);
+box-shadow:0 15px 40px rgba(0,229,255,.12);
+}
+.stat-label{
+color:var(--muted);font-size:11px;
+font-weight:700;letter-spacing:1px;
+}
+.stat-value{
+font-size:clamp(25px,5vw,35px);
+font-weight:900;margin:13px 0 5px;
+color:var(--cyan);
+text-shadow:0 0 20px rgba(0,229,255,.25);
+}
+.stat-card:nth-child(2) .stat-value{color:#b38aff}
+.stat-sub{color:#8290a8;font-size:11px}
+.panel{
+background:linear-gradient(145deg,rgba(21,33,55,.97),rgba(13,22,39,.97));
+border:1px solid var(--border);
+border-radius:20px;padding:22px;
+margin-top:18px;position:relative;
+overflow:hidden;transition:.4s;
+animation:panelEnter .9s both;
+}
+.panel:hover{
+border-color:rgba(0,229,255,.3);
+box-shadow:0 12px 35px rgba(0,0,0,.2);
+}
+.panel-heading{
+display:flex;justify-content:space-between;
+align-items:center;gap:10px;margin-bottom:18px;
+}
+.panel-heading h2{font-size:16px;margin:0}
+.plan-badge{
+color:var(--cyan);
+background:rgba(0,229,255,.09);
+border:1px solid rgba(0,229,255,.3);
+padding:8px 13px;border-radius:30px;
+font-size:10px;font-weight:800;
+letter-spacing:1px;
+}
+.plan-info{
+display:grid;grid-template-columns:1fr 1fr;
+gap:12px;
+}
+.info-box{
+background:#0b1425;
+border:1px solid var(--border);
+border-radius:13px;padding:16px;
+}
+.info-box span{
+color:var(--muted);font-size:10px;
+display:block;margin-bottom:9px;
+letter-spacing:1px;
+}
+.info-box strong{font-size:15px}
+  .account-status{
+display:flex;align-items:center;
+justify-content:space-between;
+gap:12px;background:#0b1425;
+border:1px solid var(--border);
+border-radius:14px;padding:16px;margin-top:15px;
+}
+.status-left strong{
+display:block;font-size:13px;margin-bottom:5px;
+}
+.status-left small{color:var(--muted);font-size:10px}
+.status-pill{
+border-radius:30px;padding:8px 12px;
+font-size:10px;font-weight:800;
+}
+.active{
+background:#103b31;color:#50f2b4;
+}
+.timer{
+color:var(--cyan);font-weight:800;
+font-size:12px;margin-top:13px;
+}
+.video-panel{padding:22px}
+.video-intro{
+color:var(--muted);font-size:12px;
+line-height:1.7;margin-bottom:18px;
+}
+.video-frame{
+background:#030712;
+border:1px solid rgba(0,229,255,.25);
+border-radius:15px;padding:7px;
+overflow:hidden;
+}
+video{
+width:100%;display:block;
+border-radius:10px;background:#000;
+max-height:440px;
+}
+.video-locked{
+display:flex;align-items:center;
+justify-content:center;flex-direction:column;
+text-align:center;min-height:200px;
+gap:12px;color:var(--muted);
+}
+.lock-icon{font-size:42px}
+.watch-progress{
+height:9px;background:#25324a;
+border-radius:20px;overflow:hidden;
+margin-top:18px;
+}
+.watch-progress div{
+height:100%;width:0%;
+background:linear-gradient(90deg,var(--purple),var(--cyan));
+transition:width .3s;
+border-radius:20px;
+}
+.watch-text{
+display:flex;justify-content:space-between;
+gap:8px;font-size:11px;
+color:var(--muted);margin-top:10px;
+}
+.notice{
+margin-top:16px;padding:14px;
+border-radius:12px;
+background:rgba(0,229,255,.06);
+border:1px solid rgba(0,229,255,.15);
+color:#a8c8dc;font-size:11px;line-height:1.7;
+}
+.payment{display:grid;gap:12px}
+.payment-item{
+padding:17px;border-radius:13px;
+background:#0b1425;
+border:1px solid var(--border);
+}
+.payment-item span{
+color:var(--muted);font-size:10px;
+letter-spacing:1px;display:block;
+margin-bottom:8px;
+}
+.payment-item strong{
+font-size:15px;overflow-wrap:anywhere;
+}
+.footer{
+text-align:center;padding:32px 10px 5px;
+color:#687991;font-size:11px;line-height:1.8;
+}
+@keyframes floatLight{
+0%{transform:translate(0,0) scale(1)}
+50%{transform:translate(60px,40px) scale(1.2)}
+100%{transform:translate(-30px,80px) scale(.9)}
+}
+@keyframes slideDown{
+from{opacity:0;transform:translateY(-25px)}
+to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeUp{
+from{opacity:0;transform:translateY(25px)}
+to{opacity:1;transform:translateY(0)}
+}
+@keyframes panelEnter{
+from{opacity:0;transform:translateY(30px)}
+to{opacity:1;transform:translateY(0)}
+}
+@keyframes cardEnter{
+from{opacity:0;transform:translateY(35px)}
+to{opacity:1;transform:translateY(0)}
+}
+@keyframes logoPulse{
+0%,100%{box-shadow:0 0 12px rgba(0,229,255,.25)}
+50%{box-shadow:0 0 30px rgba(0,229,255,.65)}
+}
+@keyframes logoFloat{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-4px)}
+}
+@keyframes gradientMove{
+0%{background-position:0% 50%}
+100%{background-position:200% 50%}
+}
+@media(max-width:600px){
+.container{padding:14px 12px 35px}
+.hero{padding:30px 4px 22px}
+.stats{gap:10px}
+.stat-card{padding:17px 13px}
+.panel{padding:16px}
+.plan-info{gap:8px}
+.account-status{padding:13px}
+.brand{font-size:15px}
+.logo{width:38px;height:38px}
+}
+@media(max-width:350px){
+.stat-value{font-size:22px}
+.small-status{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+*,*::before,*::after{
+animation-duration:.01ms!important;
+animation-iteration-count:1!important;
+scroll-behavior:auto!important;
+transition-duration:.01ms!important;
+}
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="topbar">
+<div class="brand">
+<div class="logo">⚡</div>
+<div>AZDAR <span style="color:#00e5ff">ADS</span></div>
+</div>
+<div class="small-status" id="topStatus">
+<i></i> ACTIVE
+</div>
+</header>
+
+<section class="hero">
+<div class="eyebrow">MEMBER DASHBOARD</div>
+<h1>Welcome, <span>Safeena Kashif</span></h1>
+<p>Your AzDar Ads Watching account. Stay consistent and complete your daily viewing session.</p>
+</section>
+
+<section class="stats">
+<div class="stat-card">
+<div class="stat-label">TOTAL EARNING</div>
+<div class="stat-value" id="totalEarning">Rs. 0</div>
+<div class="stat-sub">Accumulated earnings</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">DAILY EARNING</div>
+<div class="stat-value" id="dailyEarning">Rs. 0</div>
+<div class="stat-sub">Current 24-hour cycle</div>
+</div>
+</section>
+
+<section class="panel">
+<div class="panel-heading">
+<h2>✦ Membership Details</h2>
+<div class="plan-badge">STANDARD PLAN</div>
+</div>
+
+<div class="plan-info">
+<div class="info-box">
+<span>MEMBERSHIP</span>
+<strong>Standard</strong>
+</div>
+<div class="info-box">
+<span>DAILY REWARD</span>
+<strong>Rs. 1,500</strong>
+</div>
+<div class="info-box">
+<span>VIDEO DURATION</span>
+<strong>2 Minutes</strong>
+</div>
+<div class="info-box">
+<span>DAILY ACCESS</span>
+<strong>24 Hours</strong>
+</div>
+</div>
+
+<div class="account-status">
+<div class="status-left">
+<strong>Account Status</strong>
+<small id="statusDescription">Your account is active.</small>
+</div>
+<div class="status-pill active" id="statusPill">ACTIVE</div>
+</div>
+
+<div class="timer" id="activationTimer">
+✓ Account successfully activated
+</div>
+</section>
+
+<section class="panel video-panel">
+<div class="panel-heading">
+<h2>▶ Daily Video</h2>
+<div class="plan-badge">VIDEO 01</div>
+</div>
+
+<p class="video-intro">
+Watch the video for at least 2 minutes. Complete the viewing session to qualify for the daily reward.
+</p>
+
+<div class="video-frame" id="videoArea">
+<div class="video-locked" id="lockedMessage">
+<div class="lock-icon">🔒</div>
+<strong>Video Locked</strong>
+<span style="font-size:12px">Your video will unlock after account activation.</span>
+</div>
+
+<video id="dailyVideo" controls playsinline preload="metadata"
+controlsList="nodownload" style="display:none">
+<source src="https://upload.wikimedia.org/wikipedia/commons/c/c9/Hands_short_film.webm" type="video/webm">
+</video>
+</div>
+
+<div class="watch-progress">
+<div id="watchBar"></div>
+</div>
+
+<div class="watch-text">
+<span id="watchTime">0 / 120 seconds</span>
+<span id="watchPercent">0%</span>
+</div>
+
+<div class="notice" id="videoMessage">
+Your daily video is ready. Watch the full 2 minutes to complete your session.
+</div>
+</section>
+<section class="panel">
+<div class="panel-heading">
+<h2>👤 Payment Account Details</h2>
+<div class="plan-badge">JAZZCASH</div>
+</div>
+
+<div class="payment">
+<div class="payment-item">
+<span>ACCOUNT TITLE</span>
+<strong>Safeena bibi</strong>
+</div>
+
+<div class="payment-item">
+<span>ACCOUNT NUMBER</span>
+<strong>03313685629</strong>
+</div>
+
+<div class="payment-item">
+<span>ACCOUNT TYPE</span>
+<strong>JazzCash</strong>
+</div>
+</div>
+</section>
+
+<div class="notice">
+<strong>Important Information</strong><br>
+Earning figures shown on this page are locally stored demonstration figures. They are not proof of funds, actual payment, or a guaranteed payout. Any real reward must be independently verified and funded by the operator.
+</div>
+
+<footer class="footer">
+<strong style="color:#00e5ff">AZDAR WEB STUDIO</strong>
+<br>
+Your Vision, Our Code.
+<br>
+© 2026 AzDar Web Studio. All Rights Reserved.
+</footer>
+
+</div>
+
+<script>
+  const REWARD = 1500;
+const REQUIRED_SECONDS = 120;
+const DAY = 24 * 60 * 60 * 1000;
+const STORAGE_KEY = "azdar_safeena_member_v1";
+
+function loadData(){
+try{
+const value = JSON.parse(localStorage.getItem(STORAGE_KEY));
+if(value && typeof value === "object") return value;
+}catch(e){}
+return null;
+}
+
+let data = loadData();
+
+if(!data){
+const now = Date.now();
+data = {
+cycleStart:now,
+total:0,
+daily:0,
+completed:false
+};
+save();
+}
+
+function save(){
+localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+}
+
+const video = document.getElementById("dailyVideo");
+
+let watched = 0;
+let previousTime = null;
+let lastUpdate = 0;
+let completed = false;
+let videoReady = false;
+
+function formatMoney(amount){
+return "Rs. " + Number(amount).toLocaleString("en-PK");
+}
+
+function updateEarnings(){
+document.getElementById("totalEarning").textContent =
+formatMoney(data.total);
+
+document.getElementById("dailyEarning").textContent =
+formatMoney(data.daily);
+}
+
+function updateStatus(){
+document.getElementById("statusPill").textContent = "ACTIVE";
+document.getElementById("topStatus").innerHTML =
+'<i style="background:#50f2b4"></i> ACTIVE';
+
+document.getElementById("statusDescription").textContent =
+"Your account is active.";
+
+document.getElementById("activationTimer").textContent =
+"✓ Account successfully activated";
+
+unlockVideo();
+}
+
+function lockVideo(){
+videoReady = false;
+video.pause();
+video.style.display = "none";
+
+document.getElementById("lockedMessage").style.display = "flex";
+}
+
+function unlockVideo(){
+
+if(data.completed){
+videoReady = false;
+video.pause();
+video.style.display = "none";
+
+document.getElementById("lockedMessage").style.display = "flex";
+
+document.getElementById("lockedMessage").innerHTML =
+'<div class="lock-icon">✓</div><strong>Daily Target Completed</strong><span style="font-size:12px">Your next session will be available after the next 24-hour cycle.</span>';
+
+document.getElementById("videoMessage").textContent =
+"Your daily viewing session is complete.";
+
+return;
+}
+
+video.style.display = "block";
+
+document.getElementById("lockedMessage").style.display = "none";
+
+if(!videoReady){
+videoReady = true;
+video.load();
+}
+
+document.getElementById("videoMessage").textContent =
+"Watch at least 2 minutes of the video to complete your daily session.";
+}
+
+function resetCycle(){
+const now = Date.now();
+
+if(now >= data.cycleStart + DAY){
+
+const periods = Math.floor(
+(now - data.cycleStart) / DAY
+);
+
+data.cycleStart += periods * DAY;
+data.daily = 0;
+data.completed = false;
+
+watched = 0;
+completed = false;
+previousTime = null;
+
+save();
+}
+}
+
+function updateProgress(){
+const seconds = Math.min(watched,REQUIRED_SECONDS);
+const percent = seconds / REQUIRED_SECONDS * 100;
+
+document.getElementById("watchBar").style.width =
+percent + "%";
+
+document.getElementById("watchTime").textContent =
+Math.floor(seconds) + " / 120 seconds";
+
+document.getElementById("watchPercent").textContent =
+Math.floor(percent) + "%";
+}
+
+function creditReward(){
+
+if(completed || data.completed) return;
+
+completed = true;
+data.completed = true;
+
+data.total += REWARD;
+data.daily += REWARD;
+
+save();
+
+updateEarnings();
+updateProgress();
+
+video.pause();
+
+document.getElementById("videoMessage").textContent =
+"Your 2-minute viewing session is complete. Rs. 1,500 has been added to your locally displayed demo figures.";
+
+unlockVideo();
+}
+  video.addEventListener("playing",()=>{
+if(!videoReady || completed){
+video.pause();
+return;
+}
+
+previousTime = video.currentTime;
+lastUpdate = Date.now();
+});
+
+video.addEventListener("timeupdate",()=>{
+if(!videoReady || completed || video.paused) return;
+
+const now = Date.now();
+const current = video.currentTime;
+
+if(previousTime !== null){
+
+const videoGap = current - previousTime;
+const realGap = (now - lastUpdate) / 1000;
+
+if(videoGap > 0 && videoGap <= 1.5 &&
+realGap > 0 && realGap <= 3){
+
+watched += Math.min(videoGap,realGap);
+}
+}
+
+previousTime = current;
+lastUpdate = now;
+
+updateProgress();
+
+if(watched >= REQUIRED_SECONDS){
+creditReward();
+}
+});
+
+video.addEventListener("seeking",()=>{
+if(!videoReady) return;
+
+video.pause();
+video.currentTime = 0;
+
+watched = 0;
+previousTime = null;
+
+updateProgress();
+
+document.getElementById("videoMessage").textContent =
+"Seeking is not allowed. Please watch the video from the beginning.";
+});
+
+video.addEventListener("pause",()=>{
+previousTime = null;
+});
+
+video.addEventListener("ended",()=>{
+if(watched < REQUIRED_SECONDS){
+
+document.getElementById("videoMessage").textContent =
+"Please watch the required 2 minutes to complete your session.";
+}
+});
+
+video.addEventListener("error",()=>{
+document.getElementById("videoMessage").textContent =
+"Video could not load. Please check your internet connection.";
+});
+
+function refresh(){
+resetCycle();
+updateStatus();
+updateEarnings();
+updateProgress();
+}
+
+refresh();
+
+setInterval(refresh,1000);
+
+</script>
+</body>
+</html>
